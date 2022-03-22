@@ -3,6 +3,10 @@
         <div class="edit-box">
             <div class="edit-header">
                 <p>render</p>
+                <select v-model="selectOption" @change="changeSelect">
+                    <option v-for="(item, index) in optionList" :key="index">{{item}}</option>
+                </select>
+                <button @click="clearCode">clear code</button>
                 <button @click="renderComponent">render</button>
             </div>
             <div class="render-box">
@@ -38,13 +42,37 @@ export default {
     components: { RenderWidgetComponent },
     data () {
         return {
+            selectOption: 'default',
+            optionList: ['default', 'test-widget'],
             widgetInfo: undefined,
-            htmlCode: '<div class="text">{{value}}</div>\n<button class="text2" @click="value++">click</button>',
-            jsCode: 'data () {return {value: 1}},\ncreated () {console.log(\'created\')}',
-            cssCode: '.text {color: red}\n.text2 {color: blue}'
+            htmlCode: '',
+            jsCode: '',
+            cssCode: ''
         }
     },
+    created () {
+        this.init()
+    },
     methods: {
+        init () {
+            this.htmlCode = '<div class="text">{{value}}</div>\n<button class="text2" @click="value++">click</button>'
+            this.jsCode = 'data () {return {value: 1}},\ncreated () {console.log(\'created\')}'
+            this.cssCode = '.text {color: red}\n.text2 {color: blue}'
+        },
+        changeSelect () {
+            if (this.selectOption === 'default') {
+                this.init()
+            } else {
+                this.htmlCode = `<${this.selectOption}></${this.selectOption}>`
+                this.jsCode = ''
+                this.cssCode = ''
+            }
+        },
+        clearCode () {
+            this.htmlCode = ''
+            this.jsCode = ''
+            this.cssCode = ''
+        },
         renderComponent () {
             this.widgetInfo = {
                 html: this.htmlCode,
